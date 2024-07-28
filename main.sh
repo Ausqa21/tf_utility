@@ -6,7 +6,7 @@ then
     echo "Follow this link: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli"
 else
     echo "Formatting terraform files"
-    formatted=$(terraform fmt)
+    formatted="$(terraform fmt -recursive)"
     echo "Formatted files"
     echo "----------------"
     echo $formatted
@@ -15,5 +15,13 @@ else
     init=$(terraform init -backend=false)
     terraform validate
 
-    rm -fr .terraform
+    grep ".terraform" .gitignore > /dev/null
+    if [ "$?" -ne "0" ]
+    then
+        echo "Appending to .gitignore"
+        echo -e "\n.terraform" >> .gitignore
+        echo "Done"
+    else
+        echo "Done"
+    fi
 fi
